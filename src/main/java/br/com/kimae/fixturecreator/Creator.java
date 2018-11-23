@@ -28,7 +28,7 @@ public class Creator {
 
         print("public class %s {", fixtureClassName);
 
-        print("\tprivate %sBuilder builder = builder();", fixtureClassName);
+        print("\tprivate %sBuilder builder = %s.builder();", className, className);
 
         print("\tpublic %s build() { return builder.build(); }", className);
 
