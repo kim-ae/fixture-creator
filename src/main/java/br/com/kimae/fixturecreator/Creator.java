@@ -17,9 +17,10 @@ public class Creator {
     private static final Map<Class, String> randomStrategy = Maps.builder(HashMap<Class, String>::new)
         .put(LocalDate.class, "LocalDate.new()")
         .put(String.class, "randomAlphanumeric(20)")
-        .put(Integer.class, "nextInt(11)")
+        .put(Integer.class, "nextInt()")
         .put(Long.class, "nextLong()")
         .put(BigDecimal.class, "new BigDecimal(nextDouble())")
+        .put(Boolean.class, "nextBoolean()")
         .unmodifiable(true)
         .build();
     private static final String DEFAULT_RANDOM_STRING = "{{CLASS_NAME}}Fixture.get().random().build()";
@@ -32,7 +33,7 @@ public class Creator {
 
         print("\tpublic %s build() { return builder.build(); }", className);
 
-        print("\tpublic static %s get() { return new %s()}", fixtureClassName, fixtureClassName);
+        print("\tpublic static %s get() { return new %s(); }", fixtureClassName, fixtureClassName);
 
         Arrays.stream(clazz.getDeclaredFields())
             .forEach(Creator::buildBuilderMethods);
@@ -65,9 +66,9 @@ public class Creator {
     private static void buildRandom(final Field field) {
         Class fieldType = field.getType();
         String fieldName = field.getName();
-        String fieldClassName = field.getClass().getSimpleName();
+        String fieldClassName = fieldType.getSimpleName();
         String randomString = randomStrategy
             .getOrDefault(fieldType, DEFAULT_RANDOM_STRING.replace("{{CLASS_NAME}}", fieldClassName));
-        print("\t\t\t%s(%s)", fieldName, randomString);
+        print("\t\t\t%s(%s).", fieldName, randomString);
     }
 }
